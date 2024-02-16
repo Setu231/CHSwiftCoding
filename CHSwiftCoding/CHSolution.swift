@@ -7,6 +7,28 @@
 
 import Foundation
 
+enum CHAlert {
+    case emptyInput, invalidArray
+    
+    var title: String {
+        switch self {
+        case .emptyInput:
+            return "Please Enter Valid Input"
+        case .invalidArray:
+            return "Could not be Mapped"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .emptyInput:
+            return "Do not leave the text area empty, please enter a value you need to evaluate"
+        case .invalidArray:
+            return "Please follow the instruction given below the text area to get the solution"
+        }
+    }
+}
+
 class CHSolution {
     var mat: [[Int]]
     var rowlen: Int
@@ -73,7 +95,7 @@ class CHSolution {
                 new_row = 0
             }
             rowArr.append(row + 1)
-                recursion(row: new_row, col: new_col, rowArr: rowArr, sm: sm + tmp, lastVal: sm)
+            recursion(row: new_row, col: new_col, rowArr: rowArr, sm: sm + tmp, lastVal: sm)
             rowArr.removeLast()
         }
         mat[row][col] = tmp

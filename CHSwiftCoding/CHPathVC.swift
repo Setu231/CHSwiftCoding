@@ -21,8 +21,8 @@ class CHPathVC: UIViewController {
         let CHInformationLabel = UILabel()
         CHInformationLabel.font = UIFont.italicSystemFont(ofSize: 12.0)
         CHInformationLabel.numberOfLines = 0
-        CHInformationLabel.textAlignment = .center
-        CHInformationLabel.text = "Enter row of the matrix with a comma seperated values and use new line for all new rows. Please keep in mind to give same number of columns for each row."
+        CHInformationLabel.textAlignment = .left
+        CHInformationLabel.text = "Note: Enter row of the matrix with a comma seperated values and use new line for all new rows. Please keep in mind to give same number of columns for each row.\n\nEg: 1,2,3,4,5\n      5,4,3,2,1\n      4,6,7,8,9"
         CHInformationLabel.backgroundColor = .lightGray.withAlphaComponent(0.1)
         return CHInformationLabel
     }()
@@ -30,7 +30,7 @@ class CHPathVC: UIViewController {
     private(set) lazy var CHFindButton: UIButton = {
         let CHFindButton = UIButton()
         CHFindButton.setTitle("Evaluate", for: .normal)
-        CHFindButton.backgroundColor = .blue
+        CHFindButton.backgroundColor = .blue.withAlphaComponent(0.5)
         CHFindButton.addTarget(self, action: #selector(onPressOfButton), for: .touchUpInside)
         return CHFindButton
     }()
@@ -47,6 +47,7 @@ class CHPathVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Least Cost Path"
         CHTextView.translatesAutoresizingMaskIntoConstraints = false
         CHInformationLabel.translatesAutoresizingMaskIntoConstraints = false
         CHFindButton.translatesAutoresizingMaskIntoConstraints = false
@@ -73,16 +74,23 @@ class CHPathVC: UIViewController {
     }
     
     @objc func onPressOfButton() {
-        guard let textValue = CHTextView.text else {
-            //put alert
+        guard let textValue = CHTextView.text, !textValue.isEmpty else {
+            showAlertView(.emptyInput)
             return
         }
         guard let inputArray = convertFromStringToGridArray(input: textValue) else {
-            //put alert
+            showAlertView(.invalidArray)
             return
         }
         let solution = CHSolution(mat: inputArray)
         CHResponseLabel.text = "\(solution.solve().0) \n\(solution.solve().1) \n \(solution.solve().2)"
+    }
+    
+    private func showAlertView(_ alertType: CHAlert) {
+        let alertController = UIAlertController(title: alertType.title, message: alertType.message, preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .cancel)
+        alertController.addAction(okButton)
+        present(alertController, animated: true)
     }
     
     private func convertFromStringToGridArray(input: String) -> [[Int]]? {
