@@ -7,44 +7,24 @@
 
 import Foundation
 
-enum CHAlert {
-    case emptyInput, invalidArray
-    
-    var title: String {
-        switch self {
-        case .emptyInput:
-            return "Please Enter Valid Input"
-        case .invalidArray:
-            return "Could not be Mapped"
-        }
-    }
-    
-    var message: String {
-        switch self {
-        case .emptyInput:
-            return "Do not leave the text area empty, please enter a value you need to evaluate"
-        case .invalidArray:
-            return "Please follow the instruction given below the text area to get the solution"
-        }
-    }
-}
-
 class CHSolution {
-    var mat: [[Int]]
-    var rowlen: Int
-    var collen: Int
-    var mn: Int
+    
+    typealias CHResponseTuple = (sum: Int, isPathAvailable: Bool, pathArray: [Int])
+    
+    var matrix: [[Int]]
+    var rowLength: Int
+    var columnLength: Int
+    var minimumValue: Int
     var heap: [(Int, Bool, [Int])]
-    var noHeap: [(Int, Bool, [Int])]
-    var isPathAvailable = true
+    var oldHeap: [(Int, Bool, [Int])]
     
     init(mat: [[Int]]) {
-        self.mat = mat
-        self.rowlen = mat.count
-        self.collen = mat[0].count
-        self.mn = Int.max
+        self.matrix = mat
+        self.rowLength = mat.count
+        self.columnLength = mat[0].count
+        self.minimumValue = Int.max
         self.heap = []
-        self.noHeap = []
+        self.oldHeap = []
     }
     
     func insertHeap(_ element: (Int, Bool, [Int])) {
@@ -56,12 +36,12 @@ class CHSolution {
         }
     }
     
-    func solve() -> (Int, Bool, [Int]) {
-        for row in 0..<rowlen {
+    func solve() -> CHResponseTuple {
+        for row in 0..<rowLength {
             recursion(row: row, col: 0, rowArr: [], sm: 0, lastVal: nil)
         }
         if heap.isEmpty {
-            return noHeap[0]
+            return oldHeap[0]
         } else {
             return heap[0]
         }
@@ -70,34 +50,33 @@ class CHSolution {
     func recursion(row: Int, col: Int, rowArr: [Int], sm: Int, lastVal: Int?) {
         var rowArr = rowArr
         if sm >= 50 {
-            noHeap.append((lastVal ?? 0, false, Array(rowArr.dropLast())))
+            oldHeap.append((lastVal ?? 0, false, Array(rowArr.dropLast())))
             return
         }
-        if col >= collen {
+        if col >= columnLength {
             insertHeap((sm, true, rowArr))
-            mn = min(mn, sm)
-            print(mn)
+            minimumValue = min(minimumValue, sm)
             return
         }
-        if mat[row][col] == Int.max {
+        if matrix[row][col] == Int.max {
             return
         }
         let coordinates = [(0, 1), (-1, 1), (1, 1)]
-        let tmp = mat[row][col]
-        mat[row][col] = Int.max
+        let tmp = matrix[row][col]
+        matrix[row][col] = Int.max
         for coordinate in coordinates {
             var new_row = coordinate.0 + row
             let new_col = coordinate.1 + col
             if new_row < 0 {
-                new_row = rowlen - 1
+                new_row = rowLength - 1
             }
-            if new_row >= rowlen {
+            if new_row >= rowLength {
                 new_row = 0
             }
             rowArr.append(row + 1)
             recursion(row: new_row, col: new_col, rowArr: rowArr, sm: sm + tmp, lastVal: sm)
             rowArr.removeLast()
         }
-        mat[row][col] = tmp
+        matrix[row][col] = tmp
     }
 }
