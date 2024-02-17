@@ -11,6 +11,15 @@ class CHPathVC: UIViewController {
     
     let chPathVM = CHPathViewModel()
     
+    private(set) lazy var CHTextViewLabel: UILabel = {
+        let CHTextViewLabel = UILabel()
+        CHTextViewLabel.font = UIFont.systemFont(ofSize: 18.0)
+        CHTextViewLabel.numberOfLines = 0
+        CHTextViewLabel.textAlignment = .left
+        CHTextViewLabel.text = "Enter Matrix Value:"
+        return CHTextViewLabel
+    }()
+    
     private(set) lazy var CHTextView: UITextView = {
         let CHTextView = UITextView()
         CHTextView.font = UIFont.boldSystemFont(ofSize: 20.0)
@@ -54,20 +63,25 @@ class CHPathVC: UIViewController {
     }
     
     private func setupView() {
+        CHTextViewLabel.translatesAutoresizingMaskIntoConstraints = false
         CHTextView.translatesAutoresizingMaskIntoConstraints = false
         CHInformationLabel.translatesAutoresizingMaskIntoConstraints = false
         CHFindButton.translatesAutoresizingMaskIntoConstraints = false
         CHResponseLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(CHTextViewLabel)
         view.addSubview(CHTextView)
         view.addSubview(CHInformationLabel)
         view.addSubview(CHFindButton)
         view.addSubview(CHResponseLabel)
         
         NSLayoutConstraint.activate([
-            CHTextView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            CHTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            CHTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            CHTextViewLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
+            CHTextViewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            CHTextViewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            CHTextView.topAnchor.constraint(equalTo: CHTextViewLabel.bottomAnchor, constant: 20),
+            CHTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            CHTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             CHTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100),
             CHInformationLabel.topAnchor.constraint(equalTo: CHTextView.bottomAnchor, constant: 50),
             CHInformationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
