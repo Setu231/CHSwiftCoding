@@ -49,7 +49,7 @@ class CHSolution {
     
     func recursion(row: Int, col: Int, rowArr: [Int], sm: Int, lastVal: Int?) {
         var rowArr = rowArr
-        if sm >= 50 {
+        if sm > 50 {
             oldHeap.append((lastVal ?? 0, false, Array(rowArr.dropLast())))
             return
         }
